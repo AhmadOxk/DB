@@ -1,31 +1,35 @@
 SELECT
-   mp.MePRESCTION_id,
- m.Medication_ID,
-  m.Doses,
-  CASE
-        WHEN m.EXP_Date < DATE('now') THEN 'Expired'
-        ELSE 'Active'
-   END AS Medication_Status
- FROM
- MEDICATION_PRESCRIBED mp
+      mp.MePRESCTION_id,
+      m.Medication_ID,
+	  m.Doses,
+      COUNT(mp.patient_id) AS patient_count,
+CASE
+       WHEN m.EXP_Date < DATE('now') THEN 'Expired'
+       ELSE 'Active'
+	   END AS Medication_Status
+FROM
+	   MEDICATION_PRESCRIBED mp
 JOIN
-   MEDICATION m ON mp.Medication_ID = m.Medication_ID
+       MEDICATION m ON mp.Medication_ID = m.Medication_ID
+GROUP BY
+	   m.Medication_ID
+ORDER BY
+       mp.MePRESCTION_id
 
-
-
-select 
-	D.doctor_id,
-    D.field,
-    DEP.department_id,
-    P.Patient_Id 
-    FROM
+SELECT 
+   DEP.department_id,
+   P.Patient_Id,
+   CASE WHEN DP.time <> "2022" THEN D.doctor_id ELSE NULL END AS doctor_id,
+   CASE WHEN DP.time <> "2022" THEN D.field ELSE NULL END AS field
+FROM
     Doctor D
-	JOIN
-    DEPARTMENT DEP on D.d_department_id = DEP.department_id
-    JOIN
+JOIN
+    DEPARTMENT DEP ON D.d_department_id = DEP.department_id
+JOIN
     DOCTOR_PATIENT DP ON D.doctor_id = DP.Doctor_id
-	JOIN
-    PATIENT P ON DP.Patient_Id = P.Patient_Id
-	WHERE
+JOIN
+   PATIENT P ON DP.Patient_Id = P.Patient_Id
+WHERE
     P.Age > 0
-    ORDER BY D.doctor_id DESC ,  DP.Patient_Id  ;
+ORDER BY 
+	doctor_id DESC, DP.Patient_Id;
