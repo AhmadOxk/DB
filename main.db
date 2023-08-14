@@ -12,6 +12,7 @@ JOIN
    MEDICATION m ON mp.Medication_ID = m.Medication_ID
 
 
+
 select 
 	D.doctor_id,
     D.field,
