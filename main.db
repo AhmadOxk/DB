@@ -1,0 +1,30 @@
+SELECT
+   mp.MePRESCTION_id,
+ m.Medication_ID,
+  m.Doses,
+  CASE
+        WHEN m.EXP_Date < DATE('now') THEN 'Expired'
+        ELSE 'Active'
+   END AS Medication_Status
+ FROM
+ MEDICATION_PRESCRIBED mp
+JOIN
+   MEDICATION m ON mp.Medication_ID = m.Medication_ID
+
+
+select 
+	D.doctor_id,
+    D.field,
+    DEP.department_id,
+    P.Patient_Id 
+    FROM
+    Doctor D
+	JOIN
+    DEPARTMENT DEP on D.d_department_id = DEP.department_id
+    JOIN
+    DOCTOR_PATIENT DP ON D.doctor_id = DP.Doctor_id
+	JOIN
+    PATIENT P ON DP.Patient_Id = P.Patient_Id
+	WHERE
+    P.Age > 0
+    ORDER BY D.doctor_id DESC ,  DP.Patient_Id  ;
